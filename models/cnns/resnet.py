@@ -104,7 +104,7 @@ class ResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))  # nn.AvgPool2d() can also be used
         self.fc = nn.Linear(in_features=512 * block.expansion, out_features=num_classes)
 
-        self._initalize_weights()
+        self._initialize_weights()
 
     def _initialize_weights(self):
         for m in self.modules():
