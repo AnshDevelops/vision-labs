@@ -2,9 +2,10 @@ from torch import nn
 
 
 class BasicBlock(nn.Module):
+    expansion = 1  # number of channels preserved across all convolutional layers in BasicBlock
+
     def __init__(self, in_channels: int, out_channels: int, stride: int = 1, projections: nn.Module = None):
         super(BasicBlock, self).__init__()
-        self.expansion = 1  # number of channels preserved across all convolutional layers in BasicBlock
         self.projections = projections
 
         self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3,
@@ -37,9 +38,10 @@ class BasicBlock(nn.Module):
 
 
 class Bottleneck(nn.Module):
+    expansion = 4
+
     def __init__(self, in_channels, out_channels, stride=1, projections=None):
         super(Bottleneck, self).__init__()
-        self.expansion = 4
         self.projections = projections
 
         # 1x1 conv
