@@ -136,3 +136,23 @@ class ResNet(nn.Module):
             )
 
         return nn.Sequential(*layers)
+
+
+def resnet18(num_classes: int = 10, color_channels: int = 3) -> ResNet:
+    return ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes, color_channels=color_channels)
+
+
+def resnet34(num_classes: int = 10, color_channels: int = 3) -> ResNet:
+    return ResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes)
+
+
+def resnet50(num_classes: int = 10, color_channels: int = 3) -> ResNet:
+    return ResNet(Bottleneck, [3, 4, 6, 3], num_classes=num_classes)
+
+
+def resnet101(num_classes: int = 10, color_channels: int = 3) -> ResNet:
+    return ResNet(Bottleneck, [3, 4, 23, 3], num_classes=num_classes)
+
+
+def resnet152(num_classes: int = 10, color_channels: int = 3) -> ResNet:
+    return ResNet(Bottleneck, [3, 8, 36, 3], num_classes=num_classes)
