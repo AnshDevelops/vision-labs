@@ -5,6 +5,8 @@ import torch
 from torch import nn
 from torch.utils.tensorboard import SummaryWriter
 
+from training.early_stopping import EarlyStopper
+
 logger = logging.getLogger(__name__)
 
 
@@ -78,11 +80,18 @@ class Trainer:
                 self.writer.add_scalar("Acc/val", val_acc, epoch)
             return avg_val_loss, val_acc
 
-    def fit(self):
+    def fit(self, patience: int, min_delta: float):
         best_acc = 0.0
+
+        early_stopper = EarlyStopper(patience=patience, min_delta=min_delta)
+
         for epoch in range(self.epochs):
             self.train_epoch(epoch)
             val_loss, val_acc = self.validate(epoch)
+
+            if early_stopper(val_loss):
+                logger.info(f"Early stopping at epoch {epoch + 1}")
+                break
 
             if self.scheduler is not None:
                 self.scheduler.step(val_loss)

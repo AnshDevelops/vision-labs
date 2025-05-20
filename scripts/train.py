@@ -50,7 +50,7 @@ def main(cfg: DictConfig):
     )
 
     trainer = Trainer(model, optimizer, criterion, train_loader, val_loader, cfg, device, scheduler)
-    trainer.fit()
+    trainer.fit(cfg.training.patience, cfg.training.min_delta)
 
 
 if __name__ == "__main__":
