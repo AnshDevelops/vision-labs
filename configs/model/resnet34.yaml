@@ -1,0 +1,4 @@
+block: BasicBlock
+layers: [ 3, 4, 6, 3 ]
+num_classes: 10
+color_channels: 3
