@@ -1,0 +1,15 @@
+train:
+  RandomCrop:
+    size: 32
+    padding: 4
+  RandomHorizontalFlip: { }
+  ToTensor: { }
+  Normalize:
+    mean: [ 0.4914, 0.4822, 0.4465 ]
+    std: [ 0.2470, 0.2435, 0.2616 ]
+
+val:
+  ToTensor: { }
+  Normalize:
+    mean: [ 0.4914, 0.4822, 0.4465 ]
+    std: [ 0.2470, 0.2435, 0.2616 ]

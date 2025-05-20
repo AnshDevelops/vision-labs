@@ -24,8 +24,7 @@ def main(cfg: DictConfig):
         root=Path(cfg.dataset.root),
         batch_size=cfg.training.batch_size,
         num_workers=cfg.training.num_workers,
-        mean=cfg.dataset.mean,
-        std=cfg.dataset.std
+        transform_cfg=cfg.transforms
     )
 
     model = resnet34(num_classes=cfg.dataset.num_classes, color_channels=cfg.dataset.color_channels)
