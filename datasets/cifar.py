@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 
-def get_cifar_10_loaders(root: Path, batch_size: int, num_workers: int, mean: list, std: list):
+def get_cifar10_loaders(root: Path, batch_size: int, num_workers: int, mean: list, std: list):
     train_t = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(),
