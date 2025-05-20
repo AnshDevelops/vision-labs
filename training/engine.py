@@ -66,7 +66,7 @@ class Trainer:
             acc = correct / total
             logger.info(f"Epoch {epoch + 1} Val Loss: {avg_loss:.4f} Val Acc: {acc:.4f}")
             if self.writer:
-                self.writer.add_scalar("Loss/train", avg_loss, epoch)
+                self.writer.add_scalar("Loss/val", avg_loss, epoch)
                 self.writer.add_scalar("Acc/val", acc, epoch)
             return avg_loss
 
