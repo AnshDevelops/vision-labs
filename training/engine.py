@@ -29,7 +29,8 @@ class Trainer:
 
     def train_epoch(self, epoch: int):
         self.model.train()
-        running_loss = 0.0
+        total_loss = 0.0
+        correct, total = 0, 0
 
         pbar = self.tqdm(self.train_loader, desc=f"Epoch {epoch + 1}/{self.epochs}", leave=True)
         for imgs, labels in pbar:
@@ -40,17 +41,23 @@ class Trainer:
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            running_loss += loss.item()
+            total_loss += loss.item()
 
-        avg_loss = running_loss / len(self.train_loader)
-        logger.info(f"Epoch {epoch + 1}: Train Loss: {avg_loss:.4f}")
+            _, predicted = preds.max(1)
+            correct += predicted.eq(labels).sum().item()
+            total += labels.size(0)
+
+        avg_train_loss = total_loss / len(self.train_loader)
+        train_acc = correct / total
+        logger.info(f"Epoch {epoch + 1}: Train Loss: {avg_train_loss:.4f}, Train Acc: {train_acc:.4f}")
         if self.writer:
-            self.writer.add_scalar("Loss/train", avg_loss, epoch)
-        return avg_loss
+            self.writer.add_scalar("Loss/train", avg_train_loss, epoch)
+            self.writer.add_scalar("Acc/train", train_acc, epoch)
+        return avg_train_loss, train_acc
 
     def validate(self, epoch: int):
         self.model.eval()
-        correct, total, val_loss = 0, 0, 0
+        correct, total, total_loss = 0, 0, 0
 
         pbar = self.tqdm(self.val_loader, desc=f"Epoch {epoch + 1}/{self.epochs}", leave=True)
         with torch.no_grad():
@@ -58,18 +65,18 @@ class Trainer:
                 imgs, labels = imgs.to(self.device), labels.to(self.device)
 
                 outputs = self.model(imgs)
-                val_loss += self.criterion(outputs, labels).item()
+                total_loss += self.criterion(outputs, labels).item()
                 _, preds = outputs.max(1)
                 correct += preds.eq(labels).sum().item()
                 total += labels.size(0)
 
-            avg_loss = val_loss / len(self.val_loader)
-            acc = correct / total
-            logger.info(f"Epoch {epoch + 1} Val Loss: {avg_loss:.4f} Val Acc: {acc:.4f}")
+            avg_val_loss = total_loss / len(self.val_loader)
+            val_acc = correct / total
+            logger.info(f"Epoch {epoch + 1} Val Loss: {avg_val_loss:.4f} Val Acc: {val_acc:.4f}")
             if self.writer:
-                self.writer.add_scalar("Loss/val", avg_loss, epoch)
-                self.writer.add_scalar("Acc/val", acc, epoch)
-            return avg_loss
+                self.writer.add_scalar("Loss/val", avg_val_loss, epoch)
+                self.writer.add_scalar("Acc/val", val_acc, epoch)
+            return avg_val_loss, val_acc
 
     def fit(self):
         best_acc = 0.0
