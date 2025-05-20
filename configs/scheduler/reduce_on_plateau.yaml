@@ -1,0 +1,10 @@
+name: reduce_on_plateau
+
+mode: min
+factor: 0.1
+patience: 3
+threshold: 1e-4
+threshold_mode: rel
+cooldown: 0
+min_lr: 0.0
+eps: 1e-08

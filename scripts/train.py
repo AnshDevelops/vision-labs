@@ -38,7 +38,19 @@ def main(cfg: DictConfig):
         weight_decay=cfg.training.weight_decay
     )
 
-    trainer = Trainer(model, optimizer, criterion, train_loader, val_loader, cfg, device)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode=cfg.scheduler.mode,
+        factor=cfg.scheduler.factor,
+        patience=cfg.scheduler.patience,
+        threshold=cfg.scheduler.threshold,
+        threshold_mode=cfg.scheduler.threshold_mode,
+        cooldown=cfg.scheduler.cooldown,
+        min_lr=cfg.scheduler.min_lr,
+        eps=cfg.scheduler.eps,
+    )
+
+    trainer = Trainer(model, optimizer, criterion, train_loader, val_loader, cfg, device, scheduler)
     trainer.fit()
 
 

@@ -1,6 +1,7 @@
 defaults:
   - model: resnet34
   - dataset: cifar10
+  - scheduler: reduce_on_plateau
 
 training:
   epochs: 50

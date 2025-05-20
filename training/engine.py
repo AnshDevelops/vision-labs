@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class Trainer:
     def __init__(self, model: nn.Module, optimizer, criterion, train_loader, val_loader, cfg,
-                 device):
+                 device, scheduler=None):
         self.device = device
         self.model = model.to(device)
         self.optimizer = optimizer
@@ -19,6 +19,7 @@ class Trainer:
         self.epochs = cfg.training.epochs
         self.log_dir = Path(cfg.logging.log_dir)
         self.writer = SummaryWriter(log_dir=str(self.log_dir)) if cfg.logging.tensorboard else None
+        self.scheduler = scheduler
 
         if cfg.logging.use_notebook:
             from tqdm.notebook import tqdm
@@ -71,13 +72,16 @@ class Trainer:
             return avg_loss
 
     def fit(self):
-        best_acc = 0
+        best_acc = 0.0
         for epoch in range(self.epochs):
             self.train_epoch(epoch)
-            _, acc = self.validate(epoch)
+            val_loss, val_acc = self.validate(epoch)
 
-            if acc > best_acc:
-                best_acc = acc
+            if self.scheduler is not None:
+                self.scheduler.step(val_loss)
+
+            if val_acc > best_acc:
+                best_acc = val_acc
                 checkpoint = {
                     "epoch": epoch,
                     "model_state_dict": self.model.state_dict(),
