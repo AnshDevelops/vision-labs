@@ -14,7 +14,7 @@ from utils.torch_utils import set_seed
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(config_path="../configs", config_name="config")
+@hydra.main(config_path="../configs", config_name="config", version_base="1.3")
 def main(cfg: DictConfig):
     set_seed(cfg.training.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
